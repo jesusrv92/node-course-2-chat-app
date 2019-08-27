@@ -15,16 +15,16 @@ const io = socket_io_1.default(server);
 app.use(express_1.default.static(publicPath));
 io.on('connection', (socket) => {
     console.log('New user connected');
-    socket.emit('newMessage', {
-        from: "John",
-        text: "See you then",
-        createdAt: 123123,
-    });
     socket.on('disconnect', () => {
         console.log('User was disconnected');
     });
     socket.on('createMessage', (message) => {
         console.log('createMessage', message);
+        io.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        });
     });
 });
 server.listen(port, () => console.log(`Listening on port ${port}`));
