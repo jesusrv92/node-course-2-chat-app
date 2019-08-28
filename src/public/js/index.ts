@@ -2,8 +2,9 @@ interface Socket {
     on(ev: string, cb: (...arg) => void): void;
     emit(ev: string, obj?: object, cb?: (...args) => void): void;
 }
-interface Input extends Element {
-    value: string | number
+interface ExtendedElements extends Element {
+    value?: string | number,
+    disabled?: boolean
 }
 declare const io: () => Socket;
 var socket = io();
@@ -36,24 +37,33 @@ socket.on('newLocationMessage', function (message) {
 
 document.querySelector('#message-form').addEventListener('submit', function (e) {
     e.preventDefault();
+    var messageTextbox: ExtendedElements = document.querySelector('[name=message]');
+
     socket.emit('createMessage', {
         from: 'User',
-        text: (document.querySelector('[name=message]') as Input).value
+        text: messageTextbox.value
     }, function () {
+        messageTextbox.value = '';
     });
 });
 
-var locationButton = document.querySelector('#send-location');
+var locationButton: ExtendedElements = document.querySelector('#send-location');
 locationButton.addEventListener('click', function () {
     if (!navigator.geolocation) {
         return alert('Geolocation not supported by your browser.');
     }
+    locationButton.disabled = true;
+    locationButton.textContent = 'Sending Location...'
     navigator.geolocation.getCurrentPosition(function (position) {
+        locationButton.disabled = false;
+        locationButton.textContent = 'Send Location'
         socket.emit('createLocationMessage', {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
         })
     }, function () {
+        locationButton.disabled = false;
+        locationButton.textContent = 'Send Location'
         alert('Unable to fetch location.')
     })
 })

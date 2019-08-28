@@ -20,7 +20,7 @@ describe('generateLocationMessage', () => {
         const from = 'Deb';
         const latitude = 15;
         const longitude = 19;
-        const url = 'https://www.google.com/maps/@15,19z';
+        const url = 'https://www.google.com/maps/search/?api=1&query=15,19';
         const message = message_1.generateLocationMessage(from, latitude, longitude);
         expect_1.default(typeof message.createdAt).toBe('number');
         expect_1.default(message).toMatchObject({ from, url });
