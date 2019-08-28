@@ -7,6 +7,15 @@ function generateMessage(from, text) {
         createdAt: new Date().getTime()
     };
 }
-exports.default = generateMessage;
+exports.generateMessage = generateMessage;
+;
+function generateLocationMessage(from, lat, lon) {
+    return {
+        from,
+        url: `https://www.google.com/maps/@${lat},${lon}z`,
+        createdAt: new Date().getTime()
+    };
+}
+exports.generateLocationMessage = generateLocationMessage;
 ;
 //# sourceMappingURL=message.js.map
