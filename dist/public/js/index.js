@@ -1,4 +1,5 @@
 var socket = io();
+// socket events
 socket.on('connect', function () {
     console.log('Connected to the server');
 });
@@ -6,21 +7,23 @@ socket.on('disconnect', function () {
     console.log('Disconnected from the server');
 });
 socket.on('newMessage', function (message) {
-    console.log('New message', message);
+    var formattedTime = moment(message.createdAt).format('h:mm a');
     var li = document.createElement('li');
-    li.textContent = `${message.from}: ${message.text}`;
+    li.textContent = `${message.from} ${formattedTime}: ${message.text}`;
     document.querySelector('#messages').append(li);
 });
 socket.on('newLocationMessage', function (message) {
     var li = document.createElement('li');
     var a = document.createElement('a');
+    var formattedTime = moment(message.createdAt).format('h:mm a');
     a.textContent = 'My current location';
     a.target = '_blank';
     a.href = message.url;
-    li.textContent = `${message.from}: `;
+    li.textContent = `${message.from} ${formattedTime}: `;
     li.append(a);
     document.querySelector('#messages').append(li);
 });
+// event listeners
 document.querySelector('#message-form').addEventListener('submit', function (e) {
     e.preventDefault();
     var messageTextbox = document.querySelector('[name=message]');
