@@ -6,8 +6,8 @@ interface ExtendedElements extends Element {
 type Moment = typeof import('moment');
 type Socket = typeof import('socket.io');
 declare const moment:Moment;
-
 declare const io:Socket;
+declare const Mustache:any;
 var socket = io();
 // socket events
 socket.on('connect', function () {
@@ -19,22 +19,24 @@ socket.on('disconnect', function () {
 
 socket.on('newMessage', function (message) {
     var formattedTime = moment(message.createdAt).format('h:mm a');
-    var li = document.createElement('li');
-    li.textContent = `${message.from} ${formattedTime}: ${message.text}`;
-    document.querySelector('#messages').append(li);
+    var template = document.querySelector('#message-template').innerHTML;
+    var html = Mustache.render(template,{
+        text:message.text,
+        from:message.from,
+        createdAt: formattedTime
+    });
+    document.querySelector('#messages').insertAdjacentHTML('beforeend',html);
 });
 
 socket.on('newLocationMessage', function (message) {
-    var li = document.createElement('li');
-    var a = document.createElement('a');
     var formattedTime = moment(message.createdAt).format('h:mm a');
-    a.textContent = 'My current location';
-    a.target = '_blank';
-    a.href = message.url;
-
-    li.textContent = `${message.from} ${formattedTime}: `;
-    li.append(a);
-    document.querySelector('#messages').append(li);
+    var template = document.querySelector('#location-message-template').innerHTML;
+    var html = Mustache.render(template,{
+        from:message.from,
+        url:message.url,
+        createdAt: formattedTime
+    });
+    document.querySelector('#messages').insertAdjacentHTML('beforeend',html);
 });
 
 // event listeners
