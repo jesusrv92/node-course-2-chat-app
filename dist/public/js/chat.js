@@ -73,4 +73,4 @@ locationButton.addEventListener('click', function () {
         alert('Unable to fetch location.');
     });
 });
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=chat.js.map
