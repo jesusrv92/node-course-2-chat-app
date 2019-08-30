@@ -27,12 +27,17 @@ io.on('connection', (socket) => {
         }
     });
     socket.on('createMessage', (message, callback) => {
-        console.log('createMessage', message);
-        io.emit('newMessage', message_1.generateMessage(message.from, message.text));
+        const user = users.getUser(socket.id);
+        if (user && validation_1.isRealString(message.text)) {
+            io.to(user.room).emit('newMessage', message_1.generateMessage(user.name, message.text));
+        }
         callback();
     });
     socket.on('createLocationMessage', (coords) => {
-        io.emit('newLocationMessage', message_1.generateLocationMessage('Admin', coords.latitude, coords.longitude));
+        const user = users.getUser(socket.id);
+        if (user) {
+            io.to(user.room).emit('newLocationMessage', message_1.generateLocationMessage(user.name, coords.latitude, coords.longitude));
+        }
     });
     socket.on('join', (params, callback) => {
         if (!validation_1.isRealString(params.name || !validation_1.isRealString(params.room))) {

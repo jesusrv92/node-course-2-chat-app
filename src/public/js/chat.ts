@@ -94,7 +94,7 @@ socket.on('newLocationMessage', function (message) {
 document.querySelector('#message-form').addEventListener('submit', function (e) {
     e.preventDefault();
     var messageTextbox: ExtendedElements = document.querySelector('[name=message]');
-
+    
     socket.emit('createMessage', {
         from: 'User',
         text: messageTextbox.value
