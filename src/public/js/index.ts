@@ -2,13 +2,28 @@ interface ExtendedElements extends Element {
     value?: string | number,
     disabled?: boolean
 }
-
 type Moment = typeof import('moment');
 type Socket = typeof import('socket.io');
 declare const moment:Moment;
 declare const io:Socket;
 declare const Mustache:any;
 var socket = io();
+
+function scrollToBottom(){
+    // Selectors
+    var messages = document.querySelector('#messages');
+    var newMessage = messages.lastElementChild;
+    // Heights
+    var clientHeight = messages.clientHeight;
+    var scrollTop = messages.scrollTop;
+    var scrollHeight = messages.scrollHeight;
+    var newMessageHeight = newMessage.clientHeight;
+    var lastMessageHeight = newMessage.previousElementSibling ? newMessage.previousElementSibling.clientHeight : 0;
+
+    if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight){
+        messages.scrollTop = scrollHeight;
+    }
+}
 // socket events
 socket.on('connect', function () {
     console.log('Connected to the server');
@@ -26,6 +41,7 @@ socket.on('newMessage', function (message) {
         createdAt: formattedTime
     });
     document.querySelector('#messages').insertAdjacentHTML('beforeend',html);
+    scrollToBottom();
 });
 
 socket.on('newLocationMessage', function (message) {
@@ -37,6 +53,7 @@ socket.on('newLocationMessage', function (message) {
         createdAt: formattedTime
     });
     document.querySelector('#messages').insertAdjacentHTML('beforeend',html);
+    scrollToBottom();
 });
 
 // event listeners
